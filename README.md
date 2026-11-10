@@ -3,6 +3,10 @@
 Šablona postavená 1:1 na deckech Jakuba (Blok 1) a Lukáše (Blok 0, 2, 3).
 Hlavička (CSS, fonty, tokeny, navigace, presenter) je identická s jejich decky, neměnit.
 
+## Publikace
+
+Veřejně na https://radimkracik.github.io/effectix-ai-kreativa/ (GitHub Pages z repa https://github.com/radimkracik/effectix-ai-kreativa, větev main, účet radimkracik). Aktualizace = commit + `git push`, Pages se přegeneruje do minuty. `_preskladani/` je v .gitignore (49 MB podkladů), na web nejde.
+
 ## Soubory
 
 - `index.html` - deck, otevřít v Chrome/Edge přímo ze souboru
