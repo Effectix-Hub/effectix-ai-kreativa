@@ -5,7 +5,7 @@ Hlavička (CSS, fonty, tokeny, navigace, presenter) je identická s jejich decky
 
 ## Publikace
 
-Veřejně na https://radimkracik.github.io/effectix-ai-kreativa/ (GitHub Pages z repa https://github.com/radimkracik/effectix-ai-kreativa, větev main, účet radimkracik). Aktualizace = commit + `git push`, Pages se přegeneruje do minuty. `_preskladani/` je v .gitignore (49 MB podkladů), na web nejde.
+Veřejně na https://effectix-hub.github.io/effectix-ai-kreativa/ (GitHub Pages z repa https://github.com/Effectix-Hub/effectix-ai-kreativa, větev main, organizace Effectix-Hub). Aktualizace = commit + `git push`, Pages se přegeneruje do minuty. `_preskladani/` je v .gitignore (49 MB podkladů), na web nejde.
 
 ## Soubory
 
