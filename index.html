@@ -1,0 +1,971 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Od AI slopu k rozumné kreativě · Radim Kracík · re:LLMO · 13. 10. 2026</title>
+<meta name="description" content="Od AI slopu k rozumné kreativě. 40 minut v rámci školení Claude Code pro markeťáky. re:LLMO & Effectix, 13. 10. 2026.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+/* ============================================================
+   re:LLMO - Od AI slopu k rozumné kreativě, blok Radim Kracík (13. 10. 2026). Hlavička z decků Jakuba a Lukáše + třída .gallery.
+   Brandkit: /Users/lukaskostka/rellmo/brandkit (BRAND.md). Design systém přebrán ze seologer talku.
+   Vizuál: plný brand, střídmě - paper mesh, ribbon z kraje,
+   gold gradient ikony/čísla, glass panely, statická jiskřička.
+   ============================================================ */
+
+/* ============ Fonts (re:LLMO brandkit) ============ */
+@font-face{font-family:'Degular';src:url('assets/fonts/degular-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Degular';src:url('assets/fonts/degular-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Degular';src:url('assets/fonts/degular-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:'Degular';src:url('assets/fonts/degular-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'General Sans';src:url('assets/fonts/general-sans-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'General Sans';src:url('assets/fonts/general-sans-500.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'General Sans';src:url('assets/fonts/general-sans-600.woff2') format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'General Sans';src:url('assets/fonts/general-sans-700.woff2') format('woff2');font-weight:700;font-display:swap}
+
+/* ============ Tokens (z brandkit tokens.css) ============ */
+:root{
+  --c-brand-red:#eb4a61; --c-brand-red-text:#c8324a; --c-brand-red-light:#ff8aa0;
+  --c-logo:#ff3162; --c-ink:#161616; --c-body:#2b2b2b; --c-muted:#666; --c-disabled:#ababab;
+  --c-bg:#ffffff; --c-surface-soft:#fbf7f6; --c-border:#ececec; --c-border-strong:#d9d9d9; --c-accent:#f7901e;
+  --grad-from:#6b4de6; --grad-mid:#c13c92; --grad-to:#f1506a;
+  --grad-brand:linear-gradient(95deg,#6b4de6 0%,#c13c92 50%,#f1506a 100%);
+  --grad-btn:linear-gradient(90deg,#5a52ff 0%,#ff3162 100%);
+  --grad-icon:linear-gradient(90deg,#ff7000 0%,#ffd363 100%);
+  --font-head:'Degular','General Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace;
+  --container:74rem;
+  --ls-tight:-0.02em;
+}
+
+/* ============ Reset / base ============ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-head); color:var(--c-body);
+  /* paper mesh: base #fbf7f6 + měkké bloby (růžová/coral/zelená/béžová) - viz BRAND.md §9 */
+  background-color:#fbf7f6;
+  background-image:
+    radial-gradient(58vw 52vh at 10% -6%, rgba(196,156,178,.22), transparent 60%),
+    radial-gradient(52vw 46vh at 96% 6%, rgba(241,80,106,.10), transparent 56%),
+    radial-gradient(52vw 52vh at 82% 104%, rgba(150,178,158,.16), transparent 60%),
+    radial-gradient(46vw 42vh at -4% 98%, rgba(232,214,196,.24), transparent 60%);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow:hidden;
+}
+/* jemné zrno přes celé plátno (premium textura) */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+img{display:block;max-width:100%}
+
+/* ============ Deck / slides ============ */
+.deck{height:100vh;height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth;position:relative;z-index:1}
+.deck::-webkit-scrollbar{display:none}
+.deck{scrollbar-width:none}
+.slide{
+  position:relative; overflow:hidden;
+  min-height:100vh; min-height:100dvh; scroll-snap-align:start; scroll-snap-stop:always;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:clamp(2.2rem,6vh,5rem) clamp(1.6rem,7vw,7rem);
+  background:transparent;
+}
+/* lehký bílý závoj pro střídání rytmu (mesh prosvítá méně) */
+.slide.soft::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.55);z-index:0}
+.inner{position:relative;z-index:2;width:100%;max-width:var(--container);margin:0 auto}
+
+/* ============ Typografie ============ */
+.kicker{
+  font-family:var(--mono); font-size:.74rem; font-weight:600; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--c-brand-red-text); margin-bottom:1.3rem;
+  display:flex; align-items:center; gap:.7rem;
+}
+.kicker::before{content:"";width:1.8rem;height:2px;background:var(--c-brand-red);display:inline-block;flex:none}
+h1{font-size:clamp(2.7rem,7.6vw,6rem);font-weight:700;line-height:1.02;letter-spacing:var(--ls-tight);text-wrap:balance;color:var(--c-ink)}
+h2{font-size:clamp(2rem,4.4vw,3.5rem);font-weight:700;line-height:1.07;letter-spacing:var(--ls-tight);text-wrap:balance;color:var(--c-ink)}
+h3{font-size:clamp(1.18rem,2vw,1.5rem);font-weight:600;line-height:1.2;color:var(--c-ink)}
+.lead{font-size:clamp(1.05rem,1.6vw,1.42rem);line-height:1.5;color:var(--c-body);max-width:46ch;font-weight:400}
+.lead.wide{max-width:60ch}
+.dim{color:var(--c-muted)}
+.hl{color:var(--c-logo)}
+.grad-text{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gold-text{background:var(--grad-icon);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1 code,h2 code{background:none;padding:0;color:inherit;font-size:.82em}
+code{font-family:var(--mono);font-size:.9em;background:rgba(235,74,97,.08);padding:.08em .35em;border-radius:6px;color:var(--c-brand-red-text)}
+strong{font-weight:600;color:var(--c-ink)}
+.statement{font-size:clamp(2.3rem,6.4vw,5rem);font-weight:700;line-height:1.05;letter-spacing:var(--ls-tight);text-wrap:balance;color:var(--c-ink)}
+
+/* ============ Layout helpers ============ */
+.stack>*+*{margin-top:1.5rem}
+.stack-sm>*+*{margin-top:.9rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.6rem,4vw,3.4rem);align-items:center}
+.two.top{align-items:start}
+.two.lean{grid-template-columns:1.05fr .95fr}
+@media(max-width:820px){.two,.two.lean{grid-template-columns:1fr}}
+.cards{display:grid;gap:1.05rem}
+.cards.c4{grid-template-columns:repeat(4,1fr)}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.cards.c2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:820px){.cards.c4,.cards.c3,.cards.c2{grid-template-columns:1fr 1fr}}
+
+/* karta - bílá, plave nad mesh (BRAND.md §7) */
+.card{
+  border:1px solid var(--c-border); border-radius:18px; padding:1.4rem 1.35rem; background:#fff;
+  box-shadow:0 1px 2px rgba(20,12,12,.04),0 12px 30px rgba(20,12,12,.05);
+}
+.card .ic{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--c-brand-red-text)}
+.card h3{margin:.55rem 0 .4rem}
+.card p{font-size:.96rem;line-height:1.48;color:var(--c-body)}
+/* glass panel (BRAND.md §7) - pro hero/akcentní plochy */
+.glass{
+  background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px);
+  border:1px solid rgba(255,255,255,.7);border-radius:20px;
+  box-shadow:0 8px 30px rgba(20,12,12,.1),0 1px 0 rgba(255,255,255,.6) inset;
+}
+.tag{
+  display:inline-block;font-family:var(--mono);font-size:.76rem;font-weight:500;
+  padding:.32rem .68rem;border:1px solid var(--c-border-strong);border-radius:999px;color:var(--c-body);background:rgba(255,255,255,.7);
+}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+
+/* ============ Gold gradient ikony (BRAND.md §6) ============ */
+.gi{width:clamp(2rem,3.4vw,2.5rem);height:clamp(2rem,3.4vw,2.5rem);display:block;flex:none}
+.gi.s{fill:none;stroke:url(#giGrad);stroke-width:15;stroke-linecap:round;stroke-linejoin:round}
+.gi.f{fill:url(#giGrad)}
+.card .gi{margin-bottom:.2rem}
+/* signature jiskřička (star-four), statická */
+.spark{position:absolute;z-index:3;pointer-events:none;width:1.5rem;height:1.5rem}
+.spark svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 6px rgba(247,144,30,.4))}
+
+/* ============ Ribbon - signature, zatéká z kraje (BRAND.md §8) ============ */
+.ribbon{position:absolute;z-index:1;pointer-events:none;filter:drop-shadow(0 24px 50px rgba(235,74,97,.16))}
+.ribbon.hero{right:clamp(-11rem,-9vw,-6rem);top:46%;width:min(58vw,640px);transform:translateY(-50%)}
+.ribbon.corner{right:-8%;top:-12%;width:min(34vw,420px);opacity:.55}
+.ribbon.tail{left:-12rem;bottom:-6rem;width:min(40vw,460px);opacity:.7}
+@media(max-width:820px){.ribbon.hero{opacity:.4}}
+
+/* ============ Lists ============ */
+ul.bullets{list-style:none;display:flex;flex-direction:column;gap:.8rem}
+ul.bullets li{position:relative;padding-left:1.7rem;font-size:clamp(1rem,1.4vw,1.12rem);line-height:1.45;color:var(--c-body)}
+ul.bullets li::before{content:"";position:absolute;left:0;top:.5em;width:.55rem;height:.55rem;border-radius:2px;background:var(--grad-brand)}
+ol.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:.7rem}
+ol.steps li{position:relative;padding-left:2.5rem;font-size:clamp(.98rem,1.3vw,1.06rem);line-height:1.4;color:var(--c-body)}
+ol.steps li::before{counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;left:0;top:.05em;font-family:var(--mono);font-size:.82rem;font-weight:600;color:var(--c-brand-red-text)}
+ol.steps li b{color:var(--c-ink)}
+
+/* callout */
+.callout{border-left:3px solid var(--c-brand-red);padding:.35rem 0 .35rem 1.2rem;font-size:clamp(1.05rem,1.6vw,1.25rem);line-height:1.45;color:var(--c-ink);font-weight:500}
+.callout.big{font-size:clamp(1.4rem,2.6vw,2rem);font-weight:600}
+
+/* code */
+.code{font-family:var(--mono);font-size:clamp(.78rem,1vw,.92rem);line-height:1.6;background:var(--c-ink);color:#f4f1ea;border-radius:16px;padding:1.2rem 1.4rem;white-space:pre;overflow:auto;box-shadow:0 24px 60px rgba(20,12,12,.18)}
+.code .k{color:#ff8aa0}.code .c{color:#8a8597}.code .g{color:#ffd363}
+
+/* stat */
+.stats{display:flex;flex-wrap:wrap;gap:clamp(1.8rem,5vw,4rem)}
+.stat .n{font-size:clamp(2.6rem,6.4vw,5rem);font-weight:700;line-height:1;letter-spacing:-.03em;background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .n.gold{background:var(--grad-icon);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .lab{margin-top:.55rem;font-size:.98rem;color:var(--c-body);max-width:26ch}
+
+/* bars */
+.bars{display:flex;flex-direction:column;gap:.9rem;width:100%}
+.bar{display:grid;grid-template-columns:13rem 1fr;align-items:center;gap:1rem}
+@media(max-width:680px){.bar{grid-template-columns:1fr}}
+.bar .blab{font-size:.96rem;color:var(--c-body)}
+.bar .blab b{color:var(--c-ink)}
+.bar .btrack{height:32px;background:#efe9e8;border-radius:8px;overflow:hidden;position:relative}
+.bar .bfill{height:100%;width:var(--w);border-radius:8px;background:var(--grad-brand);display:flex;align-items:center;justify-content:flex-end;padding-right:.7rem;color:#fff;font-family:var(--mono);font-size:.8rem;font-weight:600}
+.bar .bfill.gold{background:var(--grad-icon);color:#3a2600}
+.bar .bfill.muted{background:#c9c2c0}
+html.anim .bar .bfill{width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+html.anim .slide.in .bar .bfill{width:var(--w)}
+
+/* mini diagram (orchestrace) */
+.orch{display:flex;flex-direction:column;align-items:center;gap:.55rem;width:100%}
+.orch .node{border:1px solid var(--c-border);background:#fff;border-radius:14px;padding:.7rem 1.1rem;font-weight:600;box-shadow:0 10px 26px rgba(20,12,12,.06);text-align:center}
+.orch .node.lead{background:var(--c-ink);color:#fff;border-color:var(--c-ink)}
+.orch .arrows{font-family:var(--mono);font-size:.78rem;color:var(--c-muted);letter-spacing:.05em}
+.orch .workers{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;width:100%}
+.orch .node small{display:block;font-weight:400;font-size:.8rem;color:var(--c-muted);margin-top:.2rem}
+
+/* downward curve (víc kontextu) */
+.curvebox{background:#fff;border:1px solid var(--c-border);border-radius:16px;padding:1.1rem 1.2rem .8rem;box-shadow:0 12px 30px rgba(20,12,12,.05)}
+.curvebox .axl{font-family:var(--mono);font-size:.7rem;color:var(--c-muted);display:flex;justify-content:space-between;margin-top:.3rem}
+
+/* report mock */
+.report{border:1px solid var(--c-border);border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 24px 60px rgba(20,12,12,.12)}
+.report .top{background:var(--c-ink);color:#fff;padding:.75rem 1.1rem;font-family:var(--mono);font-size:.8rem;display:flex;gap:.55rem;align-items:center}
+.report .top .dot{width:.58rem;height:.58rem;border-radius:999px;background:#ff5f57;flex:none}
+.report .top .dot.y{background:#febc2e}.report .top .dot.g{background:#28c840}
+.report .row{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.78rem 1.1rem;border-top:1px solid var(--c-border);font-size:clamp(.9rem,1.2vw,1rem)}
+.report .row:first-of-type{border-top:none}
+.report .row .lbl b{color:var(--c-ink)}.report .row .lbl span{color:var(--c-muted);font-size:.85rem}
+.badge{font-family:var(--mono);font-size:.72rem;font-weight:600;padding:.22rem .58rem;border-radius:6px;white-space:nowrap;flex:none}
+.badge.ok{background:#e7f6ec;color:#1a7f43}.badge.warn{background:#fdeede;color:#b56a07}.badge.bad{background:#fce8ec;color:#c8324a}
+
+/* table (2 sloupce – MCP vs API) */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+@media(max-width:820px){.vs{grid-template-columns:1fr}}
+.vs .col{background:#fff;border:1px solid var(--c-border);border-radius:18px;padding:1.3rem 1.35rem;box-shadow:0 12px 30px rgba(20,12,12,.05)}
+.vs .col h3{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem}
+.vs .col.alt{background:var(--c-ink);color:#fff;border-color:var(--c-ink)}
+.vs .col.alt p,.vs .col.alt li{color:rgba(255,255,255,.82)}
+.vs ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.vs li{position:relative;padding-left:1.2rem;font-size:.98rem;line-height:1.4;color:var(--c-body)}
+.vs li::before{content:"›";position:absolute;left:0;color:var(--c-brand-red);font-weight:700}
+.vs .col.alt li::before{color:var(--c-brand-red-light)}
+
+/* ============ Divider / grad slides ============ */
+.slide.divider{justify-content:center}
+.slide.divider::after{content:"";position:absolute;inset:0;background:var(--c-ink);z-index:0}
+.slide.divider .num{font-family:var(--mono);font-size:1rem;font-weight:600;letter-spacing:.24em;color:var(--c-brand-red-light);margin-bottom:1.4rem}
+.slide.divider h2{font-size:clamp(2.3rem,5.6vw,4.6rem);max-width:20ch;color:#fff}
+.slide.divider .kicker{color:var(--c-brand-red-light)}
+.slide.divider .kicker::before{background:var(--c-brand-red-light)}
+.slide.grad::after{content:"";position:absolute;inset:0;background:var(--grad-brand);z-index:0}
+.slide.grad h1,.slide.grad h2{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.28)}
+.slide.grad .lead{color:rgba(255,255,255,.94);text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.slide.divider .lead{color:rgba(255,255,255,.9)}
+
+/* title slide */
+.slide.title .wm{width:clamp(10rem,24vw,16rem);margin-bottom:2.2rem}
+.slide.title .who{margin-top:2.4rem;font-size:1.05rem;color:var(--c-muted)}
+.slide.title .who b{color:var(--c-ink);font-weight:600}
+
+/* demo slide */
+.demo-box{border-radius:20px;padding:clamp(1.5rem,4vw,2.4rem);display:flex;align-items:center;gap:clamp(1.2rem,3vw,2rem)}
+.demo-box .meta{font-family:var(--mono);font-size:.88rem;color:rgba(255,255,255,.85);display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:1rem}
+.play{width:4rem;height:4rem;border-radius:999px;background:#fff;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.play::after{content:"";border-style:solid;border-width:.8rem 0 .8rem 1.3rem;border-color:transparent transparent transparent var(--c-logo);margin-left:.3rem}
+
+/* QR */
+.qr{width:clamp(7rem,12vw,9.5rem);height:clamp(7rem,12vw,9.5rem);border-radius:14px;background:#fff;padding:.6rem;box-shadow:0 16px 40px rgba(0,0,0,.25)}
+.qr img{width:100%;height:100%}
+
+/* source + watermark */
+.source{position:absolute;left:clamp(1.6rem,7vw,7rem);bottom:1.4rem;z-index:2;font-family:var(--mono);font-size:.68rem;color:var(--c-disabled);max-width:62ch}
+.slide.divider .source,.slide.grad .source{color:rgba(255,255,255,.55)}
+.wmark{position:absolute;left:clamp(1.6rem,7vw,7rem);top:1.5rem;z-index:2}
+.wmark img{height:1.35rem;width:auto;display:block;opacity:.45}
+.slide.divider .wmark img,.slide.grad .wmark img{filter:brightness(0) invert(1);opacity:.65}
+
+/* ============ Reveal (fail-open) ============ */
+html.anim .r{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+html.anim .slide.in .r{opacity:1;transform:none}
+html.anim .slide.in .r:nth-child(2){transition-delay:.08s}
+html.anim .slide.in .r:nth-child(3){transition-delay:.16s}
+html.anim .slide.in .r:nth-child(4){transition-delay:.24s}
+html.anim .slide.in .r:nth-child(5){transition-delay:.32s}
+html.anim .slide.in .r:nth-child(6){transition-delay:.4s}
+html.anim .r-children>*{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.7,.2,1)}
+html.anim .slide.in .r-children>*{opacity:1;transform:none}
+html.anim .slide.in .r-children>*:nth-child(2){transition-delay:.1s}
+html.anim .slide.in .r-children>*:nth-child(3){transition-delay:.2s}
+html.anim .slide.in .r-children>*:nth-child(4){transition-delay:.3s}
+html.anim .slide.in .r-children>*:nth-child(5){transition-delay:.4s}
+html.anim .slide.in .r-children>*:nth-child(6){transition-delay:.5s}
+@media(prefers-reduced-motion:reduce){html.anim .r,html.anim .r-children>*{opacity:1!important;transform:none!important;transition:none!important}}
+
+/* ============ Nav ============ */
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--grad-btn);width:0;z-index:60;transition:width .3s ease}
+.dots{position:fixed;right:1.05rem;top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:.46rem}
+.dots button{width:9px;height:9px;border-radius:999px;border:none;background:#d3cbc9;cursor:pointer;padding:0;transition:transform .2s,background .2s}
+.dots button.active{background:var(--c-logo);transform:scale(1.5)}
+.counter{position:fixed;right:1.2rem;bottom:1rem;z-index:60;font-family:var(--mono);font-size:.74rem;color:var(--c-muted);background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:.26rem .6rem;border-radius:999px;border:1px solid rgba(255,255,255,.7);box-shadow:0 2px 8px rgba(20,12,12,.08)}
+.counter b{color:var(--c-ink)}
+.hint{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:60;font-family:var(--mono);font-size:.7rem;color:var(--c-disabled);transition:opacity .4s}
+@media(max-width:680px){.dots{display:none}}
+
+/* ============ Výškové breakpointy (viewport fit) ============ */
+@media(max-height:700px){
+  .stack>*+*{margin-top:1.1rem}
+  .cards{gap:.8rem}
+  .card{padding:1.1rem 1.1rem;border-radius:14px}
+}
+@media(max-height:680px){
+  /* nejhustší slide (S12) - zkraťme křivku a mezery, ať nikdy nesedí na 2px rezervě */
+  .curvebox svg{max-height:130px}
+  .curvebox{padding:.8rem 1rem .6rem}
+  .stats{gap:clamp(1.4rem,4vw,3rem)}
+}
+@media(max-height:600px){
+  .slide{padding:1.6rem clamp(1.4rem,6vw,5rem)}
+  .lead{font-size:1rem}
+  .card p{font-size:.9rem}
+  ul.bullets li{font-size:.98rem}
+  .curvebox svg{max-height:104px}
+  .stat .n{font-size:clamp(2.2rem,5vw,3.4rem)}
+}
+@media(max-height:500px){
+  .stack>*+*{margin-top:.7rem}
+  .source{display:none}
+  .slide{padding:1.1rem clamp(1.4rem,6vw,5rem)}
+  .slide.title,.slide.divider{justify-content:flex-start}
+  h1{font-size:clamp(2.2rem,6vw,3.4rem)}
+  .curvebox svg{max-height:88px}
+}
+
+/* ============ Referenční slidy ============ */
+/* Tlumené pozadí + značka v rohu. Neříká „přeskočit" — říká, že tenhle slide
+   je hustý a je na čtení, ne na promítání. Jestli se v sále ukáže, je na
+   lektorovi; podle času a podle toho, kdo v sále sedí. */
+.slide.reference{background:rgba(255,255,255,.62)}
+.slide.reference::before{
+  content:"k dohledání";
+  position:absolute;right:2.6rem;top:.45rem;z-index:3;
+  font-family:var(--mono);font-size:.66rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--c-muted);background:#f0eae9;
+  padding:.34rem .8rem;border-radius:999px;
+  border:1px solid var(--c-border);
+}
+.slide.reference h2{color:var(--c-body)}
+.slide.reference .kicker::before{background:var(--c-disabled)}
+@media(max-height:500px){.slide.reference::before{font-size:.6rem;padding:.3rem .7rem}}
+/* v navigaci má referenční slide dutou tečku, ať je na liště vidět rytmus dne */
+.dots button.ref{background:transparent;box-shadow:inset 0 0 0 2px #d3cbc9}
+.dots button.ref.active{background:var(--c-logo);box-shadow:none}
+
+/* ============ Cvičení (slide zůstává na plátně, když lidi pracují) ============ */
+.slide.task::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.7));z-index:0}
+.task-head{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.mins{font-family:var(--mono);font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--c-ink);padding:.3rem .72rem;border-radius:999px;flex:none}
+.task-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:820px){.task-grid{grid-template-columns:1fr}}
+.task-grid .card.base{border-color:var(--c-brand-red);border-width:2px}
+.task-grid .card.brake{background:var(--c-surface-soft)}
+.task-grid .lb{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted)}
+.task-grid .card.base .lb{color:var(--c-brand-red-text)}
+.cmd{font-family:var(--mono);font-size:clamp(.82rem,1.25vw,1.05rem);background:var(--c-ink);color:#ffd363;border-radius:12px;padding:.8rem 1.1rem;display:block;box-shadow:0 12px 30px rgba(20,12,12,.16);white-space:pre-wrap;word-break:break-word}
+
+/* ============ Tabulka ============ */
+.tbl{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--c-border);border-radius:16px;overflow:hidden;box-shadow:0 12px 30px rgba(20,12,12,.05);font-size:clamp(.84rem,1.12vw,1rem)}
+.tbl th,.tbl td{text-align:left;padding:.6rem .9rem;border-top:1px solid var(--c-border)}
+.tbl thead th{background:var(--c-ink);color:#fff;font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;border-top:none}
+.tbl tbody tr:nth-child(even){background:var(--c-surface-soft)}
+.tbl td b{color:var(--c-ink)}
+.tbl td.mono,.tbl td.num{font-family:var(--mono);font-size:.9em}
+.tbl td.num{text-align:right}
+
+/* ============ Co už neplatí ============ */
+.dead{text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--c-brand-red);color:var(--c-disabled)}
+
+/* ============ Gradientní slide: prvky spoléhající na tmavý text ============ */
+.slide.grad .kicker{color:#fff}
+.slide.grad .kicker::before{background:#fff}
+.slide.grad .orch .arrows{color:rgba(255,255,255,.9)}
+.slide.grad .callout{border-left-color:#fff;color:#fff}
+.slide.grad ul.bullets li{color:rgba(255,255,255,.92)}
+.slide.grad .dim{color:rgba(255,255,255,.78)}
+.slide.grad .stat .lab{color:rgba(255,255,255,.9)}
+
+/* ============ Hierarchie pojmů (převzato z Jakubova bloku 1) ============ */
+.hier{display:grid;gap:.85rem}
+.hier .lab{font-family:var(--mono);font-size:.8rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted)}
+.hier .box-cc{border:1.5px dashed var(--c-border-strong);border-radius:20px;padding:1.05rem 1.15rem;display:grid;gap:.75rem;background:rgba(255,255,255,.55)}
+.hier .cols{display:grid;grid-template-columns:2.4fr 1fr;gap:.8rem}
+.hier .box-plugin{background:var(--c-ink);border-radius:16px;padding:.95rem 1.05rem;display:grid;gap:.7rem;align-content:start}
+.hier .box-plugin .lab{color:var(--c-brand-red-light)}
+.hier .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem}
+.hier .tile{background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:.62rem .72rem}
+.hier .tile b{display:block;font-size:1rem;color:var(--c-ink)}
+.hier .tile span{display:block;font-size:.92rem;color:var(--c-muted);line-height:1.35;margin-top:.18rem}
+.hier .box-solo{border:1px solid var(--c-border);border-radius:16px;padding:.95rem 1.05rem;background:#fff;display:grid;gap:.55rem;align-content:start}
+.hier .plug{display:flex;align-items:center;justify-content:center;gap:.6rem;font-family:var(--mono);font-size:.82rem;color:var(--c-muted)}
+.hier .box-mcp{border:1.5px solid var(--c-border-strong);border-radius:20px;padding:.95rem 1.15rem;background:#fff;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.7rem 1rem}
+.hier .box-mcp .chips{margin:0}
+@media(max-width:820px){.hier .cols{grid-template-columns:1fr}.hier .tiles{grid-template-columns:1fr 1fr}}
+@media(max-height:680px){.hier{gap:.55rem}.hier .tile{padding:.45rem .6rem}.hier .box-cc,.hier .box-mcp,.hier .box-plugin,.hier .box-solo{padding:.7rem .9rem}}
+/* ============ Graf jako obrázek ============ */
+.figure{border-radius:16px;overflow:hidden;border:1px solid var(--c-border);box-shadow:0 24px 60px rgba(20,12,12,.12);background:#fff;width:min(100%,calc(56vh * 16 / 9))}
+.two .figure{width:100%}
+.figure img{width:100%;height:auto;display:block;max-height:56vh;object-fit:contain}
+@media(max-height:720px){.figure img{max-height:50vh}.figure{width:min(100%,calc(50vh * 16 / 9))}.two .figure{width:100%}}
+
+/* ---- doplněno 14. 9. večer: pravidla z Jakubova decku, která v hlavičce chyběla (kontrast na tmavých plochách) ---- */
+.vs .col.alt h3{color:#fff}
+.vs .col.alt code{background:rgba(255,255,255,.12);color:var(--c-brand-red-light)}
+.slide.divider .wmark .logo,.slide.grad .wmark .logo{filter:brightness(0) invert(1);opacity:.72}
+.slide.grad .stat .n{background:#fff;-webkit-background-clip:text;background-clip:text}
+.slide.grad ul.bullets li{color:rgba(255,255,255,.92)}
+.slide.grad .dim{color:rgba(255,255,255,.78)}
+.slide.grad .statement{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.slide.divider .who,.slide.divider .who b,.slide.grad .who,.slide.grad .who b{color:rgba(255,255,255,.88)}
+/* presenter: zrcadlo v iframe bez navigace */
+html.mirror .progress,html.mirror .dots,html.mirror .counter,html.mirror .hint{display:none}
+html.mirror{scroll-behavior:auto}
+html.mirror .deck{scroll-behavior:auto;scroll-snap-type:none}
+html.past-end .deck{opacity:0}
+
+/* ============ Galerie stojatých kreativ (přidáno pro blok Radim) ============ */
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:start}
+.gallery.one{grid-template-columns:1fr;justify-items:center}
+.gallery figure{margin:0;display:flex;flex-direction:column;gap:.45rem;align-items:center}
+.gallery img,.gallery video,.gallery .ph{width:100%;max-height:58vh;object-fit:contain;border-radius:12px;border:1px solid var(--c-border);background:#fff;box-shadow:0 12px 30px rgba(20,12,12,.1)}
+.gallery.one img,.gallery.one video{max-height:66vh;width:auto}
+.gallery .ph{height:46vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:1rem;font-family:var(--mono);font-size:.78rem;color:var(--c-muted);background:var(--c-surface-soft);border-style:dashed}
+.gallery figcaption{font-family:var(--mono);font-size:.74rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--c-brand-red-text)}
+@media(max-width:820px){.gallery{grid-template-columns:1fr 1fr}}
+@media(max-height:720px){.gallery img,.gallery video,.gallery .ph{max-height:50vh}.gallery.one img,.gallery.one video{max-height:58vh}}
+@media(max-height:600px){.gallery img,.gallery video,.gallery .ph{max-height:44vh}}
+</style>
+</head>
+<body>
+
+<!-- gradient defs pro gold ikony + jiskřičky -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="giGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#ff7000"/><stop offset="1" stop-color="#ffd363"/>
+  </linearGradient>
+</defs></svg>
+
+<div class="progress" id="progress"></div>
+<div class="dots" id="dots"></div>
+<div class="counter"><b id="cur">1</b> / <span id="tot">25</span></div>
+<div class="hint" id="hint">↓ / mezerník pro další</div>
+
+<div class="deck" id="deck">
+<!-- ============================================================
+     Radim Kracík · Od AI slopu k rozumné kreativě · 40 minut (10:35 až 11:15)
+     Pravidla převzatá z Jakubova a Lukášova decku:
+       - každý slide má HTML komentář nad sebou "R-XX · popisek" (presenter ho čte jako název)
+       - poznámky pro lektora: data-notes="..." na <section>
+       - střídej .slide a .slide.soft, .r = reveal, .r-children = reveal dětí
+       - .gallery = stojaté kreativy vedle sebe (jediná třída přidaná do hlavičky)
+       - [TODO] = chybí podklad
+     ============================================================ -->
+
+<!-- R-01 · titulní slide -->
+<section class="slide title" data-notes="Kdo jsem: Digital Tales, re:LLMO, Effectix. Jedna věta: dnes o obrázcích a videu, ne o datech. Kreativa je místo, kde AI nejvíc vidět a nejvíc bolí.">
+  <img class="ribbon hero" src="assets/ribbon-hero.webp" alt="">
+  <span class="spark" style="right:17%;top:25%;width:1.9rem;height:1.9rem"><svg viewBox="0 0 256 256"><path fill="url(#giGrad)" d="M128 12c10 70 36 96 116 116-80 20-106 46-116 116-10-70-36-96-116-116 80-20 106-46 116-116Z"/></svg></span>
+  <div class="inner stack">
+    <img class="wm r" src="assets/logo.svg" alt="re:LLMO">
+    <div class="kicker r">Praha · 13. 10. 2026 · 10:35</div>
+    <h1 class="r">Od AI slopu k&nbsp;rozumné kreativě</h1>
+    <p class="who r"><b>Radim Kracík</b> · re:LLMO a Effectix</p>
+  </div>
+</section>
+
+<!-- R-02 · tři věci -->
+<section class="slide soft" data-notes="Tři otázky, na které za 40 minut odpovím. Každá má jednu ukázku.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · program</div>
+    <h2 class="r">Tři věci na 40 minut</h2>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">01</div><h3>Kde dávají difuzní modely smysl</h3><p>Co umí dobře, kde dělají slop a proč to nejde opravit.</p></div>
+      <div class="card"><div class="ic">02</div><h3>Jak mít kreativu pod kontrolou</h3><p>Velký model v grafickém editoru přes MCP. Vrstvy, text, úpravy.</p></div>
+      <div class="card"><div class="ic">03</div><h3>Proč se nebát videí</h3><p>Stejný princip, jiný nástroj. Opus 5.5 umí ffmpeg.</p></div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-03 · AI slop -->
+<section class="slide" data-notes="Nechat viset. Slop = anglicky pomyje. Zažitý pojem pro vygenerovaný obsah bez péče.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · pojem</div>
+    <p class="statement r"><span class="grad-text">AI slop.</span><br>Rychlé, levné, vygenerované.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-03b · provařený slop -->
+<section class="slide soft" data-notes="Čtyři provařené kusy. Trump jako Ježíš: duben 2026, Truth Social, smazal to druhý den a řekl, že myslel, že je tam jako doktor. Trikolora: říjen 2026, stánek v Českých Budějovicích, AI dokreslila dav, obličeje rozmazané, torza bez hlav, místopředseda fotku smazal. Rohlík: vánoční spot z AI, všechno hezké, nic nedrží: sníh, dům, autosedačka, ruce. Slovensko: plakát kandidáta Tomáša Baloga na miting a futbalový turnaj v Košických Olšanech, všechno najednou, guláš, pivo za 0,50 €, skákací hrad, erb, vlajka. Učebnicový příklad, jak vypadá kreativa bez jediné vrstvy. Společný jmenovatel: nikdo se nepodíval pořádně.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · provařený slop</div>
+    <h2 class="r">Všichni jsme to už viděli</h2>
+    <div class="gallery r-children">
+      <figure><img style="height:44vh;object-fit:cover" src="assets/ukazky/slop-trump-jezis.jpg" alt="AI obrázek Trumpa jako Ježíše z Truth Social"><figcaption>Trump jako Ježíš · Truth Social, 4/2026</figcaption></figure>
+      <figure><img style="height:44vh;object-fit:cover" src="assets/ukazky/slop-trikolora.jpg" alt="Volební stánek Trikolory s AI dokresleným davem"><figcaption>Stánek Trikolory · dav z AI, 10/2026</figcaption></figure>
+      <figure><img style="height:44vh;object-fit:cover" src="assets/ukazky/slop-rohlik.jpg" alt="Záběr z AI vánoční reklamy Rohlík.cz"><figcaption>Rohlík · vánoční spot z AI</figcaption></figure>
+      <figure><img style="height:44vh;object-fit:cover;object-position:center top" src="assets/ukazky/slop-balog.jpg" alt="AI plakát na miting a futbalový turnaj kandidáta Tomáša Baloga, Košické Olšany"><figcaption>Miting a futbalový turnaj · Košické Olšany, 10/2026</figcaption></figure>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-04 · ukázky slopu: difuzní modely -->
+<section class="slide soft" data-notes="Stejný prompt, čtyři nejlepší difuzní modely. Nechat lidi chvíli hledat chyby: Měxko, Mašenky, tatos, qesadilla, rozbité znaky. Všechno vypadá hezky, nic není použitelné bez opravy.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · ukázky slopu</div>
+    <h2 class="r">Jeden prompt, čtyři difuzní modely</h2>
+    <div class="gallery r-children">
+      <figure><img src="assets/ukazky/dif-flux2pro.jpg" alt="FLUX 2 Pro"><figcaption>FLUX 2 Pro</figcaption></figure>
+      <figure><img src="assets/ukazky/dif-gpt-image-25.jpg" alt="GPT Image 2.5"><figcaption>GPT Image 2.5</figcaption></figure>
+      <figure><img src="assets/ukazky/dif-nano-banana-pro.jpg" alt="Nano Banana Pro"><figcaption>Nano Banana Pro</figcaption></figure>
+      <figure><img src="assets/ukazky/dif-seedream-45.jpg" alt="Seedream 4.5"><figcaption>Seedream 4.5</figcaption></figure>
+    </div>
+    <p class="dim r" style="max-width:none">Prompt: banner na výšku pro Meta, pozvánka na Mexický týden v restauraci U Mařenky.<br>Tacos, quesadilla, tequila, 11. 12. 2026, Za Humny 31, Náchod. S knírem nebo kloboukem sleva 30&nbsp;%.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-05 · plusy a minusy slopu -->
+<section class="slide" data-notes="Nebýt snob. Pro hospodu v Náchodě je i tohle posun proti ničemu. Ale u značky, která má manuál, je to problém.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · bilance</div>
+    <h2 class="r">Plusy a minusy AI slopu</h2>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>Plusy</h3>
+        <ul>
+          <li>Demokratizace. Kreativu si udělá každý, bez grafika a bez rozpočtu.</li>
+          <li>Výsledek obvykle předá sdělení. Kdo, co, kdy, kde.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Minusy</h3>
+        <ul>
+          <li>Přeplácané.</li>
+          <li>Kýčovité.</li>
+          <li>Viditelné patterny. Poznáš to na první pohled.</li>
+          <li>Chyby v detailech. Písmena, diakritika, názvy.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-06 · opravdový problém: úpravy -->
+<section class="slide soft" data-notes="Tohle je hlavní teze první části. Styl se dá naladit, chyby se dají přegenerovat. Ale každá úprava = nový obrázek. Klient chce posunout logo o kus doleva a ty mu přineseš jiný obrázek.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · skutečný problém</div>
+    <h2 class="r">Problém difuzních modelů není styl, chyby ani kýč</h2>
+    <p class="lead wide r">Je to <b>možnost úprav</b>. Pokaždé je nutné obrázek přegenerovat.</p>
+    <div class="cards c4 r-children">
+      <div class="card"><div class="ic">Neefektivní</div><h3>Celý obrázek znovu</h3><p>Kvůli jednomu písmenu.</p></div>
+      <div class="card"><div class="ic">Pomalé</div><h3>Kolo za kolem</h3><p>Každá změna je další generování a další čekání.</p></div>
+      <div class="card"><div class="ic">Drahé</div><h3>Platíš za každý pokus</h3><p>I za ty, které zahodíš.</p></div>
+      <div class="card"><div class="ic">Bez kontroly</div><h3>Jednu věc opraví, jinou rozbije</h3><p>Výsledek nikdy není ten, který jsi schválil.</p></div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-07 · řešení tu bylo dlouho -->
+<section class="slide" data-notes="MCP do GIMPu, Photoshopu, Figmy existuje přes rok. Problém nebyl v nástroji, ale v modelu. Vpravo Opus 4.6, stejný prompt: bez diakritiky, Verdana, černé pozadí. Žák páté třídy v Malování.">
+  <div class="inner two top">
+    <div class="stack r">
+      <div class="kicker">AI kreativa · řešení</div>
+      <h2>Řešení tady bylo už dlouho</h2>
+      <p class="lead">MCP do grafických programů. Model neskládá pixely, ale vrstvy, text a tvary. Každý prvek jde dodatečně posunout.</p>
+      <p class="dim">Jenže staré modely dávaly hnusné výstupy. Jako žák páté třídy v Malování.</p>
+      <p class="callout">Ale dneska tady máme nové modely.</p>
+    </div>
+    <div class="gallery one r">
+      <figure><img src="assets/ukazky/mcp-opus-46.jpg" alt="Opus 4.6 v GIMPu"><figcaption>Opus 4.6 · GIMP přes MCP · stejný prompt</figcaption></figure>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-08 · první WOW moment -->
+<section class="slide soft" data-notes="Astra od OpenAI, o týden později Opus 5.5. Rozdíl není v tom, že umí volat nástroje. Rozdíl je, že vidí, co udělaly, a umí posoudit, jestli to vypadá dobře.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · zlom</div>
+    <h2 class="r">První WOW moment</h2>
+    <div class="cards c2 r-children">
+      <div class="card"><div class="ic">OpenAI</div><h3>Astra</h3><p>První model, který v grafickém editoru složil kreativu, za kterou se nemusíš stydět.</p></div>
+      <div class="card"><div class="ic">Anthropic · o týden později</div><h3>Opus 5.5</h3><p>Totéž, a navíc drží kompozici a hierarchii textu.</p></div>
+    </div>
+    <p class="callout big r">Modely mají mnohem lepší vizuální chápání. A možná cosi jako estetické cítění.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-09 · ukázky: LLM v GIMPu -->
+<section class="slide" data-notes="Stejný prompt jako u difuzních modelů, ale v GIMPu přes MCP. Bez guidelines. Všimni si: žádné překlepy, správná diakritika, všechno jsou vrstvy. Text jde přepsat, logo posunout, barvu změnit. Během vteřin, ne nového generování.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · ukázky</div>
+    <h2 class="r">Stejný prompt, tentokrát v GIMPu přes MCP</h2>
+    <div class="gallery r-children">
+      <figure><img src="assets/ukazky/mcp-astra.jpg" alt="Astra"><figcaption>Astra</figcaption></figure>
+      <figure><img src="assets/ukazky/mcp-opus-55.jpg" alt="Opus 5.5"><figcaption>Opus 5.5</figcaption></figure>
+      <figure><img src="assets/ukazky/mcp-fable-51.jpg" alt="Fable 5.1"><figcaption>Fable 5.1</figcaption></figure>
+      <figure><img src="assets/ukazky/mcp-sol-6.jpg" alt="Sol 6"><figcaption>Sol 6</figcaption></figure>
+    </div>
+    <p class="dim r">Bez brand guidelines, bez podkladů. Každý prvek je samostatná vrstva, text je text.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-10 · přeskládat podle guidelines -->
+<section class="slide soft" data-notes="Teď to chci přeskládat. Dám modelu guidelines: bezpečný čtverec pro Meta (střed 1080x1080 musí nést sdělení, okraje jen dekorace). Model vezme stejné vrstvy a přeskládá je. Nic negeneruje znovu. Každý model dostal svůj vlastní XCF a stejný brief; sám rozhodl, co vypustí (výčet jídel, slogan o cenách, podtitulek).">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · kontrola</div>
+    <h2 class="r">Co když to chci přeskládat?</h2>
+    <p class="lead wide r">Dáme tomu guidelines. Třeba <b>bezpečný čtverec kreativ pro Meta</b>: sdělení musí přežít ořez na 1:1, okraje jsou jen dekorace.</p>
+    <div class="gallery r-children">
+      <figure><img src="assets/ukazky/safe-astra.jpg" alt="Astra, přeskládáno"><figcaption>Astra</figcaption></figure>
+      <figure><img src="assets/ukazky/safe-opus-55.jpg" alt="Opus 5.5, přeskládáno"><figcaption>Opus 5.5</figcaption></figure>
+      <figure><img src="assets/ukazky/safe-fable-51.jpg" alt="Fable 5.1, přeskládáno"><figcaption>Fable 5.1</figcaption></figure>
+      <figure><img src="assets/ukazky/safe-sol-6.jpg" alt="Sol 6, přeskládáno"><figcaption>Sol 6</figcaption></figure>
+    </div>
+    <p class="callout r">Stejné vrstvy, jiné rozložení. Žádné nové generování.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-09b · pod kapotou: vrstvy v GIMPu -->
+<section class="slide soft" data-notes="Tohle je to, co z hotového PNG není vidět. Vlevo přeskládaný XCF od Opusu (27 vrstev, i stíny zvlášť), vpravo od Solu (13 vrstev). Každý text je textová vrstva. Sol vypuštěné texty jen skryl (oko vypnuté), takže se dají kdykoli vrátit. Model posouvá offsety, mění velikost písma, skrývá vrstvy. Stejná práce jako grafik, jen přes API z Claude Code. Žádné nové pixely.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · pod kapotou</div>
+    <h2 class="r">Jak to vypadá v GIMPu</h2>
+    <div class="gallery r-children" style="grid-template-columns:1fr 1fr">
+      <figure><img src="assets/ukazky/gimp-opus-55.jpg" alt="GIMP, přeskládaný XCF od Opus 5.5 s panelem vrstev"><figcaption>Opus 5.5 · 27 vrstev, každý text je textová vrstva</figcaption></figure>
+      <figure><img src="assets/ukazky/gimp-sol-6.jpg" alt="GIMP, přeskládaný XCF od Sol 6 s panelem vrstev"><figcaption>Sol 6 · 13 vrstev, vypuštěné jen skryl</figcaption></figure>
+    </div>
+    <p class="dim r">Model nemaluje. Posouvá vrstvy, mění velikost písma, skrývá, co se nevejde. Přes MCP z Claude Code.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-11 · co je potřeba -->
+<section class="slide" data-notes="Čtyři věci. Tři z nich jsou zadarmo nebo už je máš. Čtvrtá je ta, kterou většina firem nemá: podklady. Bez nich model vymýšlí, s nimi skládá.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · výbava</div>
+    <h2 class="r">Co je k tomu potřeba</h2>
+    <div class="cards c4 r-children">
+      <div class="card"><div class="ic">01</div><h3>Claude Code nebo Codex</h3><p>Model, který vidí výsledek a umí volat nástroje.</p></div>
+      <div class="card"><div class="ic">02</div><h3>Grafický editor</h3><p>Klidně open source. GIMP stačí.</p></div>
+      <div class="card"><div class="ic">03</div><h3>Funkční MCP</h3><p>Most mezi modelem a editorem. Vrstvy, text, export.</p></div>
+      <div class="card"><div class="ic">04</div><h3>Podklady!</h3><p>Brand guidelines, logo, fotky, elementy, nápad, instrukce.</p></div>
+    </div>
+    <p class="callout r">Bez podkladů model vymýšlí. S podklady skládá.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-12 · a co videa: ffmpeg -->
+<section class="slide soft" data-notes="Stejný princip jako u obrázků. Video není magie: sled obrázků, zvuk, titulky. ffmpeg je open-source nástroj z příkazové řádky, umí prakticky všechno se zvukem a videem, zdarma, běží všude. Otázka z publika: Claude si jen nahraje knihovnu, kde je rozdíl? Rozdíl není v knihovně. Model drží celou časovou osu: ví, kdy začíná věta, kdy má naskočit titulek, kdy ztlumit hudbu. Spočítá to, spustí render, podívá se na výsledek a opraví. Opus 5.5 to umí spolehlivě.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · video</div>
+    <h2 class="r">A co videa?</h2>
+    <p class="statement r">Nebát se toho.</p>
+    <p class="lead wide r">Stejný princip. Model neskládá pixely, řídí nástroj. Tím nástrojem je <b>ffmpeg</b>.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Nástroj</div><h3>Co je ffmpeg</h3><p>Open-source „švýcarský nůž“ na video a zvuk z příkazové řádky. Střih, formáty, titulky, mix zvuku. Zdarma, běží všude.</p></div>
+      <div class="card"><div class="ic">Model</div><h3>Co dělá model</h3><p>Napíše příkazy nebo skript, spočítá časování, spustí render, podívá se na výsledek a opraví. Opus 5.5 to umí.</p></div>
+      <div class="card"><div class="ic">Rozdíl</div><h3>„Jen si nahraje knihovnu?“</h3><p>Knihovna neví, kdy začíná věta. Model drží celou časovou osu: záběr, hlas, titulek, hudba, na setinu sekundy.</p></div>
+    </div>
+    <code class="cmd r">ffmpeg -i zaber.mp4 -i voiceover.mp3 -i hudba.mp3 -filter_complex "[2:a]volume=0.15[h];[1:a][h]amix[a];[0:v]scale=1080:1920,subtitles=titulky.ass[v]" -map "[v]" -map "[a]" -shortest spot-9x16.mp4</code>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-12b · z čeho se video skládá -->
+<section class="slide" data-notes="Čtyři vstupy. Záběry natočené, ne generované: máte jistotu, že tam nebudou artefakty generování, žádné šesté prsty, žádné rozpadlé písmo. Voiceover: tady se vyplatí zaplatit ElevenLabs, vybrat hlas, připojit přes MCP ke Claudovi a nechat si ho vyrobit. Titulky model vyrenderuje přímo do videa, časování vezme z přepisu. Hudba z ElevenLabs nebo Suno, model ji ztlumí pod hlas. A největší výhoda: časování a synchronizace. To je přesně to, v čem je model lepší než člověk s časovou osou v editoru.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · video</div>
+    <h2 class="r">Z čeho se video skládá</h2>
+    <div class="cards c4 r-children">
+      <div class="card"><div class="ic">01</div><h3>Záběry</h3><p>Natočené, ne generované. Jistota, že tam nebudou artefakty generování.</p></div>
+      <div class="card"><div class="ic">02</div><h3>Voiceover</h3><p>Vyplatí se zaplatit ElevenLabs. Vybrat hlas, připojit přes MCP, nechat vyrobit.</p></div>
+      <div class="card"><div class="ic">03</div><h3>Titulky</h3><p>Časování z přepisu, font a barva podle brandu. Model je vyrenderuje přímo do videa.</p></div>
+      <div class="card"><div class="ic">04</div><h3>Hudba</h3><p>ElevenLabs nebo Suno. Model ji ztlumí pod hlas a ukončí se střihem.</p></div>
+    </div>
+    <p class="callout big r">Obrovská výhoda: časování a synchronizace. Hlas, titulky a střih sedí na setinu sekundy.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-12c · pravidlo pro video -->
+<section class="slide soft" data-notes="U videa to platí už dnes, dřív než u obrázků. Nechtějte po modelu, aby video vymyslel a vygeneroval. Dejte mu natočené záběry, hlas, hudbu, brand a ffmpeg. Dvě reálné ukázky pro klienty: Loison (Reels na firemní dárky, fotky a videa od klienta, hlas a hudba ElevenLabs, titulky podle slov z přepisu) a Svoboda (výkup bytů, animovaná mapa Prahy z GeoJSON v Pythonu, hlas ElevenLabs, hudba). Pustit jedno z nich, 30 s stačí. Klik na video, mezerník by přepnul slide.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · video</div>
+    <h2 class="r">Dejte LLM podklady a nástroje</h2>
+    <div class="two lean r">
+      <div class="stack">
+        <p class="lead">U videa to platí už dnes. Záběry, hlas, hudba, brand. A ffmpeg. Zbytek je práce modelu.</p>
+        <div class="cards r-children" style="grid-template-columns:1fr">
+          <div class="card"><div class="ic">Loison</div><h3>Reels, panettone pro firmy</h3><p>Fotky a videa od klienta, hlas Tomáš z ElevenLabs, hudba ElevenLabs, titulky podle slov, kolotoč produktů. 32 s, celé z ffmpeg.</p></div>
+          <div class="card"><div class="ic">Svoboda</div><h3>Výkup bytů v Praze</h3><p>Animovaná mapa z GeoJSON, logo, hlas Zdeněk z ElevenLabs, hudba, časování z přepisu. 44 s, Python + ffmpeg.</p></div>
+        </div>
+      </div>
+      <div class="gallery r-children" style="grid-template-columns:1fr 1fr">
+        <figure><video src="assets/video/loison-reels.mp4" poster="assets/video/loison-reels.jpg" controls preload="metadata" playsinline style="max-height:62vh;width:auto"></video><figcaption>Loison · 9:16 · 33 s</figcaption></figure>
+        <figure><video src="assets/video/svoboda-vykup.mp4" poster="assets/video/svoboda-vykup.jpg" controls preload="metadata" playsinline style="max-height:62vh;width:auto"></video><figcaption>Svoboda · 9:16 · 44 s</figcaption></figure>
+      </div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-12d · harness, ne prompt -->
+<section class="slide" data-notes="Jedna věta na závěr před shrnutím. LLM v kreativě už není o promptech pro difuzní modely. Je to o harnessu, stejně jako v jiných oborech: dáte modelu informace, podklady, kontext a nástroje. Prompt je pak detail. Příklad z dneška: Mexický týden. Stejný prompt dostaly čtyři difuzní modely a vrátily slop. Stejný prompt dostal model v GIMPu s MCP a vrátil vrstvy. A když dostal navíc brief s bezpečným čtvercem a svůj XCF, přeskládal to sám. Prompt se nezměnil ani jednou. Změnil se harness.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · pointa</div>
+    <p class="statement r">Už to není o promptu. Je to o harnessu.</p>
+    <p class="lead wide r">Stejně jako v jiných oborech. Dejte modelu <b>informace, podklady, kontext a nástroje</b>. Prompt je pak detail.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Stejný prompt</div><h3>Difuzní model</h3><p>Jen prompt. Výsledek: slop, překlepy, nic se nedá upravit.</p></div>
+      <div class="card"><div class="ic">Stejný prompt</div><h3>+ GIMP přes MCP</h3><p>Prompt a nástroj. Výsledek: vrstvy, text je text, dá se přepsat.</p></div>
+      <div class="card"><div class="ic">Stejný prompt</div><h3>+ brief a vlastní XCF</h3><p>Prompt, nástroj, podklady a pravidla. Výsledek: model to přeskládal sám.</p></div>
+    </div>
+    <p class="callout r">Prompt se za celou dobu nezměnil. Měnil se harness kolem něj.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-12e · a co video generátory -->
+<section class="slide" data-notes="Teď druhá polovina videa: generátory. Veo, Sora, Kling, Hailuo. To je mnohem rizikovější než střih natočeného materiálu. Artefakty, kompozice, konzistence postav a prostředí mezi záběry. Ohlídat to ručně je náročné. Claude přes API s tím hodně pomůže: popíše každý frame, srovná záběry, vyhodí ty s chybou, znovu zadá generování. Ale jeden koncept je dnes aktuálnější než kdy dřív.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · video generátory</div>
+    <h2 class="r">A co video generátory?</h2>
+    <p class="statement r">To je mnohem rizikovější.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Riziko</div><h3>Artefakty, kompozice, konzistence</h3><p>Šest prstů, mizející předměty, jiná tvář v každém záběru. Ohlídat to ručně je náročné.</p></div>
+      <div class="card"><div class="ic">Pomoc</div><h3>Claude přes API jako kontrolor</h3><p>Popíše každý snímek, srovná záběry mezi sebou, vyhodí ty s chybou a zadá generování znovu.</p></div>
+      <div class="card"><div class="ic">Pozor</div><h3>Jeden koncept</h3><p>Je dnes hodně aktuální. Popsal ho Masahiro Mori už v roce 1970.</p></div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-12f · uncanny valley -->
+<section class="slide soft" data-notes="Masahiro Mori, 1970. Čím víc se něco podobá člověku, tím sympatičtější nám to je. Až do bodu, kdy je to skoro člověk, ale ne úplně. Tam sympatie prudce spadne do záporu. Tísnivé údolí. AI video generátory dnes sedí přesně na kraji toho údolí.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · uncanny valley</div>
+    <h2 class="r">Tísnivé údolí</h2>
+    <div class="two lean r">
+      <svg viewBox="0 0 760 440" style="width:100%;height:auto;max-height:60vh" role="img" aria-label="Graf tísnivého údolí: emoční odezva roste s podobností člověku, těsně před plnou podobností prudce padá do záporu">
+        <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--c-ink)"/></marker></defs>
+        <line x1="70" y1="420" x2="70" y2="30" stroke="var(--c-ink)" stroke-width="2" marker-end="url(#arr)"/>
+        <line x1="70" y1="300" x2="745" y2="300" stroke="var(--c-ink)" stroke-width="2" marker-end="url(#arr)"/>
+        <line x1="555" y1="70" x2="555" y2="410" stroke="var(--c-muted)" stroke-width="1.5" stroke-dasharray="3 5"/>
+        <line x1="652" y1="70" x2="652" y2="410" stroke="var(--c-muted)" stroke-width="1.5" stroke-dasharray="3 5"/>
+        <path d="M70,300 C220,282 380,125 470,100 C522,88 546,200 576,330 C592,392 606,402 626,362 C652,300 700,120 736,42" fill="none" stroke="var(--c-brand-red)" stroke-width="5" stroke-linecap="round"/>
+        <line x1="250" y1="38" x2="560" y2="38" stroke="var(--c-ink)" stroke-width="2" marker-start="url(#arr)" marker-end="url(#arr)"/>
+        <text x="405" y="30" text-anchor="middle" font-family="var(--mono)" font-size="15" fill="var(--c-ink)">antropomorfismus</text>
+        <text transform="translate(40,230) rotate(-90)" text-anchor="middle" font-family="var(--mono)" font-size="15" fill="var(--c-ink)">emoční odezva</text>
+        <text x="80" y="328" font-family="var(--mono)" font-size="13" fill="var(--c-muted)">čistě stroj</text>
+        <text x="662" y="328" font-family="var(--mono)" font-size="13" fill="var(--c-muted)">plně člověk</text>
+        <text x="540" y="400" text-anchor="end" font-family="var(--mono)" font-size="14" font-weight="700" fill="var(--c-ink)">tísnivé údolí</text>
+        <line x1="546" y1="396" x2="596" y2="392" stroke="var(--c-ink)" stroke-width="1.5" marker-end="url(#arr)"/>
+      </svg>
+      <div class="stack">
+        <p class="lead">Masahiro Mori, 1970. Čím podobnější člověku, tím sympatičtější. Až do chvíle, kdy je to <b>skoro člověk</b>.</p>
+        <p class="callout">Tam sympatie spadnou do záporu. A přesně na kraji tohohle údolí dnes sedí AI video.</p>
+      </div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-12g · otázka: extrém dole v údolí -->
+<section class="slide" data-notes="Nechat chvíli viset. Zeptat se sálu. Odpověď na dalším slidu.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · uncanny valley</div>
+    <p class="statement r">Dole v údolí existuje jeden extrém, který vydělal filmařům hodně peněz.</p>
+    <p class="lead wide r">Co to je?</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-12h · zombie -->
+<section class="slide soft" data-notes="Zombie. Skoro člověk, hýbe se, ale něco je špatně. Celý žánr stojí na dně tísnivého údolí. Záběr z Úsvitu mrtvých, Zack Snyder 2004, běžící zombie.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · uncanny valley</div>
+    <h2 class="r">Zombie</h2>
+    <div class="figure r" style="width:min(100%,calc(62vh * 3 / 2))"><img src="assets/ukazky/usvit-mrtvych.jpg" alt="Běžící zombie v ulici, záběr z filmu Úsvit mrtvých (2004)" style="max-height:62vh"></div>
+    <p class="dim r">Úsvit mrtvých (Dawn of the Dead, 2004)</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-12i · Moriho graf s pohybem -->
+<section class="slide" data-notes="Moriho původní graf. Dvě křivky: bez pohybu a s pohybem. Pohyb všechno zesiluje: humanoidní robot je výš než plyšák, ale zombie je mnohem hlouběji než mrtvola. Video je pohyb. Proto je u generovaného videa údolí hlubší než u obrázku. Dole mrtvola a zombie, nahoře zdravý člověk.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · uncanny valley</div>
+    <h2 class="r">Pohyb údolí prohlubuje</h2>
+    <svg viewBox="0 0 900 560" style="width:100%;height:auto;max-height:66vh" role="img" aria-label="Moriho graf: afinita podle podobnosti člověku, dvě křivky, bez pohybu a s pohybem; s pohybem je vrchol vyšší a údolí hlubší">
+      <line x1="90" y1="545" x2="90" y2="30" stroke="var(--c-ink)" stroke-width="3"/>
+      <line x1="90" y1="400" x2="870" y2="400" stroke="var(--c-muted)" stroke-width="2"/>
+      <text x="68" y="60" text-anchor="middle" font-family="var(--mono)" font-size="22" font-weight="700" fill="var(--c-ink)">+</text>
+      <text x="68" y="540" text-anchor="middle" font-family="var(--mono)" font-size="22" font-weight="700" fill="var(--c-ink)">−</text>
+      <text transform="translate(50,300) rotate(-90)" text-anchor="middle" font-family="var(--mono)" font-size="16" fill="var(--c-ink)">afinita</text>
+      <text x="110" y="428" font-family="var(--mono)" font-size="15" font-weight="700" fill="var(--c-ink)">podobnost člověku</text>
+      <text x="475" y="428" text-anchor="middle" font-family="var(--mono)" font-size="13" fill="var(--c-muted)">50 %</text>
+      <text x="845" y="428" text-anchor="middle" font-family="var(--mono)" font-size="13" fill="var(--c-muted)">100 %</text>
+      <path d="M90,400 C250,392 430,300 525,292 C600,286 640,330 680,440 C698,486 716,476 740,420 C785,330 830,300 862,262" fill="none" stroke="var(--c-ink)" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M90,400 C250,372 450,200 560,160 C622,138 652,250 692,470 C708,528 724,528 744,480 C776,400 826,190 862,48" fill="none" stroke="var(--c-brand-red)" stroke-width="4" stroke-dasharray="10 8" stroke-linecap="round"/>
+      <rect x="120" y="60" width="210" height="72" rx="10" fill="#fff" stroke="var(--c-border)"/>
+      <line x1="140" y1="86" x2="200" y2="86" stroke="var(--c-brand-red)" stroke-width="4" stroke-dasharray="10 8"/><text x="212" y="91" font-family="var(--mono)" font-size="14" fill="var(--c-ink)">s pohybem</text>
+      <line x1="140" y1="114" x2="200" y2="114" stroke="var(--c-ink)" stroke-width="3.5"/><text x="212" y="119" font-family="var(--mono)" font-size="14" fill="var(--c-ink)">bez pohybu</text>
+      <text x="120" y="332" font-family="var(--mono)" font-size="14" fill="var(--c-ink)">průmyslový robot</text><line x1="200" y1="338" x2="178" y2="388" stroke="var(--c-muted)"/>
+      <text x="470" y="150" font-family="var(--mono)" font-size="14" fill="var(--c-ink)">humanoidní robot</text><line x1="545" y1="156" x2="560" y2="160" stroke="var(--c-muted)"/>
+      <text x="520" y="272" text-anchor="middle" font-family="var(--mono)" font-size="14" fill="var(--c-ink)">plyšové zvíře</text>
+      <text x="640" y="478" text-anchor="end" font-family="var(--mono)" font-size="14" fill="var(--c-ink)">mrtvola</text><line x1="646" y1="474" x2="690" y2="474" stroke="var(--c-muted)"/>
+      <text x="690" y="548" text-anchor="end" font-family="var(--mono)" font-size="15" font-weight="700" fill="var(--c-brand-red)">zombie</text><line x1="696" y1="543" x2="730" y2="520" stroke="var(--c-muted)"/>
+      <text x="770" y="466" font-family="var(--mono)" font-size="14" fill="var(--c-ink)">protetická ruka</text><line x1="768" y1="460" x2="748" y2="440" stroke="var(--c-muted)"/>
+      <text x="700" y="120" text-anchor="end" font-family="var(--mono)" font-size="14" fill="var(--c-ink)">loutka bunraku</text><line x1="706" y1="124" x2="800" y2="250" stroke="var(--c-muted)"/>
+      <text x="852" y="30" text-anchor="end" font-family="var(--mono)" font-size="14" fill="var(--c-ink)">zdravý člověk</text>
+      <path d="M660,100 q0,-14 14,-14 h58 q14,0 14,-14 q0,14 14,14 h58 q14,0 14,14" fill="none" stroke="var(--c-ink)" stroke-width="2.5"/>
+      <text x="760" y="60" text-anchor="middle" font-family="var(--mono)" font-size="16" font-weight="700" fill="var(--c-ink)">tísnivé údolí</text>
+    </svg>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-12j · negenerujte zombíky -->
+<section class="slide grad" data-notes="Pointa k video generátorům. Lidé v generovaném videu jsou nejrychlejší cesta do údolí. Produkt, prostředí, abstrakce, animace, to ano. Lidské tváře a ruce v pohybu, to zatím jen když to opravdu ohlídáte.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · video generátory</div>
+    <p class="statement r">Negenerujte zombíky.</p>
+    <p class="lead wide r">Produkt, prostředí, animace: ano. Lidské tváře a ruce v pohybu: jen když to opravdu ohlídáte.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-13 · shrnutí -->
+<section class="slide grad" data-notes="Shrnutí. Předat slovo Lukášovi, Blok 2 začíná 11:15.">
+  <div class="inner stack">
+    <div class="kicker r">AI kreativa · shrnutí</div>
+    <h2 class="r">Co si odnést</h2>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Difuzní modely</div><h3>Na inspiraci a pozadí</h3><p>Ne na finální kreativu. Problém není styl, ale úpravy.</p></div>
+      <div class="card"><div class="ic">Kontrola</div><h3>Model v editoru přes MCP</h3><p>Vrstvy a text místo pixelů. Změna za vteřiny, ne nové generování.</p></div>
+      <div class="card"><div class="ic">Podklady</div><h3>Bez nich to nejde</h3><p>Guidelines, logo, fotky. Pak se nebát ani videa.</p></div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- R-14 · díky -->
+<section class="slide divider" data-notes="Kontakt. Otázky o pauze nebo na konci dne.">
+  <div class="inner stack">
+    <div class="num r">Díky</div>
+    <h2 class="r">Radim Kracík</h2>
+    <p class="who r"><b>radim.kracik@effectix.com</b> · re:LLMO a Effectix</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+</div>
+<script>
+(function(){
+  // ---- role stránky -------------------------------------------------------
+  // index.html            → živý deck (to, co je na projektoru)
+  // index.html#view=current → zrcadlo aktuálního slidu (běží v presenter.html)
+  // index.html#view=next    → zrcadlo následujícího slidu
+  var params = new URLSearchParams(location.hash.replace(/^#/,''));
+  var view   = params.get('view');
+  var mirror = (view === 'current' || view === 'next');
+  var offset = (view === 'next') ? 1 : 0;
+
+  var deck=document.getElementById('deck');
+  var slides=Array.prototype.slice.call(deck.querySelectorAll('.slide'));
+  var dotsWrap=document.getElementById('dots');
+  var cur=document.getElementById('cur'), tot=document.getElementById('tot');
+  var prog=document.getElementById('progress'), hint=document.getElementById('hint');
+  tot.textContent=slides.length;
+
+  // Reveal animace jen v živém decku, když je tab viditelný a bez reduce-motion.
+  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!mirror && !document.hidden && !rm){document.documentElement.classList.add('anim');}
+
+  // ---- kanál mezi okny ----------------------------------------------------
+  // BroadcastChannel funguje i na file://, takže presenter view nepotřebuje server.
+  var ch=null;
+  try{ ch=new BroadcastChannel('rellmo-deck'); }catch(e){}
+
+  // Popisek slidu bereme z HTML komentáře nad ním; poznámky z data-notes.
+  function meta(i){
+    var s=slides[i]; if(!s) return {label:'',notes:''};
+    var n=s.previousSibling, label='';
+    while(n && n.nodeType!==8 && n.nodeType!==1){ n=n.previousSibling; }
+    if(n && n.nodeType===8) label=n.textContent.trim();
+    return {label:label, notes:s.getAttribute('data-notes')||''};
+  }
+
+  function scrollTo(i, smooth){
+    i=Math.max(0,Math.min(slides.length-1,i));
+    if(smooth){ slides[i].scrollIntoView({behavior:'smooth'}); }
+    else { deck.scrollTop += slides[i].getBoundingClientRect().top - deck.getBoundingClientRect().top; }
+  }
+
+  // ---- zrcadlo ------------------------------------------------------------
+  if(mirror){
+    document.documentElement.classList.add('mirror');
+    document.documentElement.classList.remove('anim');
+    slides.forEach(function(s){ s.classList.add('in'); });
+    deck.style.scrollBehavior='auto';
+    deck.style.scrollSnapType='none';
+    var shown=-1;
+    if(ch){
+      ch.onmessage=function(e){
+        var m=e.data||{};
+        if(m.type!=='state') return;
+        var i=m.i+offset;
+        if(i>slides.length-1){ document.documentElement.classList.add('past-end'); return; }
+        document.documentElement.classList.remove('past-end');
+        if(i===shown) return;
+        shown=i; scrollTo(i,false);
+      };
+      ch.postMessage({type:'ping'});          // ať živý deck hned pošle svůj stav
+    }
+    window.addEventListener('resize',function(){ if(shown>=0) scrollTo(shown,false); });
+    return;                                   // zrcadlo nic neovládá
+  }
+
+  // ---- živý deck ----------------------------------------------------------
+  slides.forEach(function(s,i){
+    var b=document.createElement('button'); b.setAttribute('aria-label','Slide '+(i+1));
+    if(s.classList.contains('reference')){b.classList.add('ref');}
+    b.addEventListener('click',function(){slides[i].scrollIntoView({behavior:'smooth'});});
+    dotsWrap.appendChild(b);
+  });
+  var dots=Array.prototype.slice.call(dotsWrap.children);
+  var current=0;
+
+  function broadcast(){
+    if(!ch) return;
+    var m=meta(current), nx=meta(current+1);
+    ch.postMessage({type:'state', i:current, total:slides.length,
+                    label:m.label, notes:m.notes, nextLabel:nx.label});
+  }
+
+  function setActive(i){
+    if(i===current && slides[i].classList.contains('in')) return;
+    current=i;
+    dots.forEach(function(d,j){d.classList.toggle('active',j===i);});
+    cur.textContent=(i+1);
+    prog.style.width=((i+1)/slides.length*100)+'%';
+    broadcast();
+  }
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); setActive(slides.indexOf(e.target)); }
+    });
+  },{threshold:0.55});
+  slides.forEach(function(s){io.observe(s);});
+
+  function go(d){var n=Math.max(0,Math.min(slides.length-1,current+d));slides[n].scrollIntoView({behavior:'smooth'});}
+  window.addEventListener('keydown',function(e){
+    if(e.target&&e.target.tagName==='VIDEO'){return;} // mezerník ovládá video, ne slide
+    if(['ArrowDown','ArrowRight','PageDown',' '].indexOf(e.key)>-1){e.preventDefault();go(1);}
+    else if(['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key)>-1){e.preventDefault();go(-1);}
+    else if(e.key==='Home'){e.preventDefault();slides[0].scrollIntoView({behavior:'smooth'});}
+    else if(e.key==='End'){e.preventDefault();slides[slides.length-1].scrollIntoView({behavior:'smooth'});}
+    else if(e.key==='p'||e.key==='P'){ window.open('presenter.html','rellmo-presenter','width=1280,height=800'); }
+  });
+
+  if(ch){
+    ch.onmessage=function(e){
+      var m=e.data||{};
+      if(m.type==='nav')  go(m.d);
+      else if(m.type==='goto') scrollTo(m.i,true);
+      else if(m.type==='ping') broadcast();
+    };
+  }
+  broadcast();
+
+  var hidHint=false;
+  deck.addEventListener('scroll',function(){if(!hidHint){hidHint=true;hint.style.opacity='0';}},{passive:true});
+})();
+</script>
+</body>
+</html>
